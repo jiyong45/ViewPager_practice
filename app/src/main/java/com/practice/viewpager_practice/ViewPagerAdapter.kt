@@ -5,41 +5,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 
-class ViewPagerAdapter(private val context : Context) : PagerAdapter() {
+class ViewPagerAdapter(private val list: ArrayList<ItemPage>) : PagerAdapter() {
 
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val inflater = LayoutInflater.from(container.context)
+        val view = inflater.inflate(R.layout.page,container,false)
 
-    private var layoutInflater : LayoutInflater? = null
+        val pagerImage = view.findViewById<ImageView>(R.id.pagerImg)
+        val mainTitle = view.findViewById<TextView>(R.id.mainTitle)
+        val subTitle = view.findViewById<TextView>(R.id.subTitle)
+        val descript = view.findViewById<TextView>(R.id.descript)
 
-    val Image = arrayOf(
-        R.drawable.main_00,
-        R.drawable.main_01,
-        R.drawable.main_02
-    )
+        pagerImage.setImageResource(list[position].getItemId(container.context))
+        mainTitle.text = list[position].mainTitle
+        subTitle.text = list[position].subTitle
+        descript.text = list[position].descript
 
-    override fun isViewFromObject(view: View, 'object' : Any) : Boolean {
-        return view === 'object'
+        container.addView(view)
+        return view
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        container.removeView(obj as View?)
+    }
+
+    override fun isViewFromObject(view: View, obj: Any): Boolean {
+        return view == obj
     }
 
     override fun getCount(): Int {
-        return Image.size
+        return list.size
     }
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val v = layoutInflater!!.inflate(R.layout.page,null)
-        val image = v.findViewById<ImageView>(R.id.pagerImg)
-        image.setImageResource(Image[position])
-        val vp = container as ViewPager
-        vp.addView(v, 0)
-        return v
-    }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        val vp = container as ViewPager
-        val v = 'object' as View
-        vp.removeView(v)
-    }
+
 }
